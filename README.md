@@ -1,2 +1,2 @@
 # flamingo
-Architecturally focused pyRevit extension
+An architecturally focused pyRevit extension
