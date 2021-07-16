@@ -1,0 +1,7 @@
+title: "Grids in view"
+tooltip: >
+  Place spot coordinates on all grids in the current view based on selected
+  rules.
+
+  Select grids in the view before running this command to limit which
+  grids will get spot coordinates placed.

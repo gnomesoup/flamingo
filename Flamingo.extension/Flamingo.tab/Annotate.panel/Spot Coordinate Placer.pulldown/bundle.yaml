@@ -1,0 +1,8 @@
+title: "Spot Coordinate\nPlacer"
+tooltip: >
+  Place lots of spot coordinates all over the current view.
+layout:
+  - Spot Coordinate Placer Pick Edges
+  - Spot Coordinate Placer Walls
+  - Spot Coordinate Placer Grids
+  

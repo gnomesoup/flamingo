@@ -1,0 +1,7 @@
+# bundle title
+# Icon from <a target="_blank" href="https://icons8.com/icons/set/accuracy">Accuracy icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+title: "Excel\nImport"
+
+tooltip: >
+  Import an excel spreadsheet into a Revit project note block
+  schedule.

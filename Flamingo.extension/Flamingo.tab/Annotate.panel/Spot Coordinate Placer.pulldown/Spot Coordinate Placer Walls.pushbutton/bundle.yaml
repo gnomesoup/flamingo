@@ -1,0 +1,7 @@
+title: "Walls in view"
+tooltip: >
+  Place spot coordinates on all walls in the current view based on selected
+  rules.
+
+  Select walls in the view before running this command to limit which walls
+  will get spot coordinates placed.
