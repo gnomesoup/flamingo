@@ -1,0 +1,5 @@
+title: "Place All\nFamilies"
+tooltip: >-
+  Place all families in a selected folder in the model. All subtypes of the
+  family will be placed. This process can take some time if there are a lot of
+  families to be placed.
