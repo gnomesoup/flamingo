@@ -1,6 +1,5 @@
 from pyrevit import DB, forms, HOST_APP, revit
 
-
 if __name__ == "__main__":
     doc = HOST_APP.doc
 
