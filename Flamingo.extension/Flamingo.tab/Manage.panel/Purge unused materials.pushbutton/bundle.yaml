@@ -1,0 +1,8 @@
+title: "Purge Unused\nMaterials"
+tooltip: >-
+  Purge all unused materials and material assets from the model.
+
+
+  WARNING: This is a destructive process. Be sure you do not need maintain any
+  unused materials
+  or assets before proceeding.
