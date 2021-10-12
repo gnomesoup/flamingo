@@ -2,6 +2,8 @@
 from pyrevit import clr, DB, HOST_APP, revit, forms, script
 from flamingo.revit import SetNoteBlockProperties
 from flamingo.excel import OpenWorkbook, GetWorksheetData
+import os
+import sys
 
 import System
 clr.ImportExtensions(System.Linq)
@@ -24,9 +26,33 @@ for symbol in allSymbols:
 
 # Alert users if the correct family is not loaded
 if not symbolId:
-    forms.alert(symbolId, "The " + symbolName
-                + " family is not loaded into the project.",
-                exitscript=True)
+    hostVersion = revit.HOST_APP.version
+    familyPath = sys.path[1] + "\\" + hostVersion \
+        + "\\" + symbolName + ".rfa"
+
+    if os.path.exists(familyPath):
+        response = forms.alert(
+            "The {} family is not loaded into the project."
+            " Would you like to load it now?".format(symbolName),
+            yes=True,
+            cancel=True,
+        )
+        if response:
+            noteBlockSymbol = revit.ensure.ensure_family(
+                symbolName,
+                familyPath)
+            if type(noteBlockSymbol) is not DB.AnnotationSymbolType:
+                noteBlockSymbol = noteBlockSymbol.First()
+            print(noteBlockSymbol)
+            symbolId = noteBlockSymbol.Id
+        else:
+            script.exit()
+    else:
+        forms.alert(
+            "Load the family {} and try again.".format(symbolName),
+            exitscript=True
+        )
+
 
 
 excelPath = forms.pick_excel_file(save=False,
