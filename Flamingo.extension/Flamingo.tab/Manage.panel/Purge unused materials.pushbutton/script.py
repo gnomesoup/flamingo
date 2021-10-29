@@ -1,4 +1,4 @@
-from pyrevit import DB, HOST_APP, forms, revit, EXEC_PARAMS
+from pyrevit import DB, HOST_APP, forms, revit, EXEC_PARAMS, script
 import re
 import clr
 import System
@@ -86,7 +86,10 @@ if unusedMaterials:
 
     if materialFormData:
         with revit.Transaction("Purge unused materials"):
-            revit.delete.delete_elements(doc, materialFormData)
+            revit.delete.delete_elements(
+                element_list=materialFormData,
+                doc=doc
+            )
 
 postPurgeMaterials = DB.FilteredElementCollector(doc) \
     .OfClass(DB.Material) \
@@ -115,7 +118,10 @@ if unusedAssets:
 
     if assetFormData:
         with revit.Transaction("Purge unused assets"):
-            revit.delete.delete_elements(assetFormData)
+            revit.delete.delete_elements(
+                assetFormData,
+                doc=doc
+            )
 
 if not unusedMaterials and not unusedAssets:
     forms.alert("There are no unused materials or assets to purge")

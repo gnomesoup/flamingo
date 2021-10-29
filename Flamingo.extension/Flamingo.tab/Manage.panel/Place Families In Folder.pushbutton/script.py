@@ -21,15 +21,22 @@ def PathIsFamilyPath(filepath):
 
 if __name__ == "__main__":
     doc = HOST_APP.doc
+    rvtVersion = HOST_APP.version
 
     familyDirectory = forms.pick_folder(
         title="Select a folder to load families"
     )
+    if not familyDirectory:
+        script.exit()
+
     familiesToPlace = []
     for dirpath, dirnames, filenames in walk(familyDirectory):
         for filename in filenames:
             if PathIsFamilyPath(filename):
                 familiesToPlace.append(path.join(familyDirectory, filename))
+
+    for familyPath in familiesToPlace:
+        revit.query.
 
     if familiesToPlace:
         familyString = "families" if len(familiesToPlace) > 1 else "family"
@@ -54,8 +61,8 @@ if __name__ == "__main__":
             for familyPath in familiesToPlace
         ]
         
-    # for family in families:
-    #     print(family.)
+    for family in families:
+        print(family.Id)
     # with revit.Transaction("Place families"):
 
     print(len(families))
