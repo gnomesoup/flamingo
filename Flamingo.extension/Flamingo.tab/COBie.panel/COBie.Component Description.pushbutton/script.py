@@ -27,7 +27,7 @@ if __name__ == "__main__":
             isCobie = element.LookupParameter("COBie").AsInteger()
             if isCobie == 1:
                 description = element.get_Parameter(
-                    DB.BuiltInParameter.ELEM_FAMILY_AND_TYPE_PARAM
+                    DB.BuiltInParameter.ELEM_TYPE_PARAM
                 ).AsValueString()
                 elementDescription = element.LookupParameter(
                     "COBie.Component.Description"
