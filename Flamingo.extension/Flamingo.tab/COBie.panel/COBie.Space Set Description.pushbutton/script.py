@@ -28,9 +28,10 @@ if __name__ == "__main__":
                     DB.BuiltInParameter.ROOM_NAME
                 ).AsString()
             spaceDescription = room.LookupParameter("COBie.Space.Description")
+            spaceDescriptionValue = spaceDescription.AsString()
             if (
-                spaceDescription == "" or
-                spaceDescription == None or
+                spaceDescriptionValue == "" or
+                spaceDescriptionValue == None or
                 selection == "All Values"
             ):
                 spaceDescription.Set(roomName)

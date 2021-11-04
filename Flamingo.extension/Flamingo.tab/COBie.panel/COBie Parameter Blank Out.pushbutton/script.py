@@ -49,6 +49,9 @@ if __name__ == "__main__":
         button_name='Select Parameters'
     )
 
+    if not parameterNamesOut:
+        script.exit()
+
     bindings = doc.ParameterBindings
     with revit.Transaction("COBie Parameter Blank Out"):
         for parameterName in parameterNamesOut:
