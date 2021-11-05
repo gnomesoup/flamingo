@@ -70,7 +70,7 @@ def GetWorksheetData(worksheet, group=False, skip=0):
         sortRow = False
         cellValue = None
         for j in range(1, lastColumn + 1):
-            cellValue = worksheet.Cells[i,j].Value2
+            cellValue = worksheet.Cells[i,j].Text
             if cellValue not in [None, ""]:
                 if j == 1 and group:
                     sortRow = True
