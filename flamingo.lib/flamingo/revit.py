@@ -73,19 +73,24 @@ def SetNoteBlockProperties(scheduleView,
             if columnWidthList:
                 newField.GridColumnWidth = columnWidthList[i]
             fields[parameterNameList[i]] = newField
-    scheduleDefinition.ClearFilters()
-    scheduleFilter = DB.ScheduleFilter(fields["Worksheet"].FieldId,
-        DB.ScheduleFilterType.Equal, viewName)
-    scheduleDefinition.AddFilter(scheduleFilter)
-    scheduleDefinition.ClearSortGroupFields()
-    groupSort = DB.ScheduleSortGroupField(fields["Group Sort"].FieldId)
-    scheduleDefinition.AddSortGroupField(groupSort)
-    groupName = DB.ScheduleSortGroupField(fields["Group Name"].FieldId)
-    groupName.ShowHeader = True
-    scheduleDefinition.AddSortGroupField(groupName)
-    sortOrder = DB.ScheduleSortGroupField(fields["Sort Order"].FieldId)
-    scheduleDefinition.AddSortGroupField(sortOrder)
     return scheduleView
+
+def GetScheduleFields(viewSchedule):
+    """
+    Creates a dictionary of fields assigned to a schedule by field name
+
+    Args:
+        viewSchedule (DB.ViewSchedule): The schedule view to pull fields from
+
+    Returns:
+        dict: Dictionary of fields in the schedule added by field name
+    """
+    fields = {}
+    scheduleDefinition = viewSchedule.Definition
+    for scheduleId in scheduleDefinition.GetFieldOrder():
+        field = scheduleDefinition.GetField(scheduleId)
+        fields[field.GetName()] = field
+    return fields
 
 def MarkModelTransmitted(filepath, isTransmitted=True):
     """

@@ -63,9 +63,16 @@ def GetWorksheetData(worksheet, group=False, skip=0):
     lastColumn = worksheet.UsedRange.Columns.Count
     groupSort = 0
     groupName = None
-    sheetValues = {}
+    sheetValues = {
+        "rowCount": lastRow,
+        "columnCount": lastColumn
+    }
     for i in range(skip + 1, lastRow + 1):
-        metaValues = [groupName, groupSort]
+        metaValues = {
+            "Sort Name": groupName,
+            "Sort Number": groupSort,
+            "Row Number": i,
+        }
         rowValues = []
         sortRow = False
         cellValue = None
@@ -81,5 +88,8 @@ def GetWorksheetData(worksheet, group=False, skip=0):
             groupSort = groupSort + 1
             groupName = rowValues[0]
             continue
-        sheetValues[i] = {"meta": metaValues, "data": rowValues}
+        sheetValues[i] = {
+            "meta": metaValues,
+            "data": rowValues,
+        }
     return sheetValues
