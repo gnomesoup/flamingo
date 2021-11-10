@@ -1,0 +1,3 @@
+[submodule "flamingo.lib"]
+	path = flamingo.lib
+	url = git@github.com:gnomesoup/flamingo.lib
