@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pyrevit import clr, DB, HOST_APP, revit, forms, script
+from pyrevit import clr, DB, HOST_APP, revit, forms, script, UI
 from flamingo.revit import SetNoteBlockProperties, GetScheduleFields
 from flamingo.excel import OpenWorkbook, GetWorksheetData
 import os
@@ -99,6 +99,7 @@ if __name__ == "__main__":
     overwrite = commandSelections[1]["Overwrite Previous Imports"]
 
     with revit.Transaction("Import excel data"):
+        createdSchedules = []
         for selection in selections:
             worksheet = worksheets[selection]
             worksheetName = worksheet.name
@@ -214,41 +215,46 @@ if __name__ == "__main__":
                 scheduleView = None
 
             if scheduleView is None:
-                with revit.Transaction("Create import schedule"):
-                    scheduleView = DB.ViewSchedule.CreateNoteBlock(doc,
-                        noteBlockSymbol.Family.Id)
-                    SetNoteBlockProperties(
-                        scheduleView=scheduleView,
-                        viewName="Excel-{}".format(worksheetName),
-                        familyInstance=rowFamily,
-                        metaParameterNameList=metaParameterNames,
-                        columnNameList=dataParameterNames[0:data["columnCount"]],
-                        headerNames=headerNames,
-                    )
-                    fields = GetScheduleFields(scheduleView)
-                    print("fields = {}".format(fields))
-                    scheduleDefinition = scheduleView.Definition
-                    scheduleDefinition.ClearFilters()
-                    scheduleFilter = DB.ScheduleFilter(
-                        fields["Workbook"].FieldId,
-                        DB.ScheduleFilterType.Equal, workbookName
-                    )
-                    scheduleFilter = DB.ScheduleFilter(
-                        fields["Worksheet"].FieldId,
-                        DB.ScheduleFilterType.Equal, worksheetName
-                    )
-                    scheduleDefinition.AddFilter(scheduleFilter)
-                    scheduleDefinition.ClearSortGroupFields()
-                    groupSort = DB.ScheduleSortGroupField(
-                        fields["Row Number"].FieldId
-                    )
-                    scheduleDefinition.AddSortGroupField(groupSort)
-                    groupName = DB.ScheduleSortGroupField(
-                        fields["Sort Name"].FieldId
-                    )
-                    groupName.ShowHeader = True
-                    scheduleDefinition.AddSortGroupField(groupName)
-                    sortOrder = DB.ScheduleSortGroupField(
-                        fields["Sort Number"].FieldId
-                    )
-                    scheduleDefinition.AddSortGroupField(sortOrder)
+                # with revit.Transaction("Create import schedule"):
+                scheduleView = DB.ViewSchedule.CreateNoteBlock(doc,
+                    noteBlockSymbol.Family.Id)
+                SetNoteBlockProperties(
+                    scheduleView=scheduleView,
+                    viewName="Excel-{}".format(worksheetName),
+                    familyInstance=rowFamily,
+                    metaParameterNameList=metaParameterNames,
+                    columnNameList=dataParameterNames[0:data["columnCount"]],
+                    headerNames=headerNames,
+                )
+                fields = GetScheduleFields(scheduleView)
+                scheduleDefinition = scheduleView.Definition
+                scheduleDefinition.ClearFilters()
+                scheduleFilter = DB.ScheduleFilter(
+                    fields["Workbook"].FieldId,
+                    DB.ScheduleFilterType.Equal, workbookName
+                )
+                scheduleFilter = DB.ScheduleFilter(
+                    fields["Worksheet"].FieldId,
+                    DB.ScheduleFilterType.Equal, worksheetName
+                )
+                scheduleDefinition.AddFilter(scheduleFilter)
+                scheduleDefinition.ClearSortGroupFields()
+                groupSort = DB.ScheduleSortGroupField(
+                    fields["Sort Number"].FieldId
+                )
+                scheduleDefinition.AddSortGroupField(groupSort)
+                groupName = DB.ScheduleSortGroupField(
+                    fields["Sort Name"].FieldId
+                )
+                groupName.ShowHeader = True
+                scheduleDefinition.AddSortGroupField(groupName)
+                sortOrder = DB.ScheduleSortGroupField(
+                    fields["Row Number"].FieldId
+                )
+                scheduleDefinition.AddSortGroupField(sortOrder)
+                createdSchedules.append(scheduleView)
+
+    if createdSchedules:
+        uidoc = HOST_APP.uidoc
+        for schedule in createdSchedules:
+            uidoc.RequestViewChange(schedule)
