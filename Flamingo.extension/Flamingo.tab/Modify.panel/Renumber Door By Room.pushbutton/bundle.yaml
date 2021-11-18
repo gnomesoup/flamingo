@@ -1,0 +1,4 @@
+title: "Renumber Door \nBy Room"
+tooltip: >-
+  Renumbers door by room number. Attempts to renumber doors for rooms that only
+  have a single door first, moving up to the room with the most connected rooms.
