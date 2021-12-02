@@ -1,0 +1,5 @@
+title: "Save Out \nCDX Families"
+tooltip: >-
+  Export all families listed in the GSA.Facilities schedule. This is helpful
+  to gather all families that need the CDX standard parameters added using
+  the BIM Interoperability Toolbar
