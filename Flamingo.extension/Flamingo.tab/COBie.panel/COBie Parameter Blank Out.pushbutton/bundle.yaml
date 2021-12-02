@@ -1,8 +1,0 @@
-title: "Parameter \nBlank Out"
-tooltip: >-
-  Clears out unused COBie parameters. This is helpful to remove data that is
-  not part of the COBie delieverable at the particular project stage. 
-  
-  For example, Manufacturer is not to be filled out at the end of Construction
-  Documents, so this utility can be used to clear the COBie.Type.Manufacturer
-  values for all elements in the model.
