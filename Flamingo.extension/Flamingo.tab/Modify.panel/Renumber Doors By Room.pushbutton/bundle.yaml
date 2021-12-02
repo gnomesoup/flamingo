@@ -1,0 +1,7 @@
+title: "Renumber Doors \nBy Room"
+tooltip: >-
+  Renumbers the doors in the active view by room number. Attempts to renumber
+  doors for rooms that only have a single door first, moving up to the room with
+  the most connected rooms. Rooms with multiple doors will append an alpha
+  character to the end of the door number (e.g. 101A, 101B). Pre-select doors
+  before running the command to limit the doors that are renumbered.
