@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     # Get the current view
     view = doc.ActiveView
-    HideUnplacedViewTags(viewId=view.Id, doc=doc)
+    HideUnplacedViewTags(view=view, doc=doc)
 
 
     # Filter through all elements on the current view to find view tags.
