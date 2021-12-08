@@ -2,16 +2,20 @@
     <StackPanel Margin="10,0,0,0">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition Width="375"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
-                <TextBlock Text="{Binding name}" FontWeight="Medium" />
-                <TextBlock Text="{Binding projectname}" />
+                <TextBlock Text="{Binding modelName}" FontWeight="Medium"/>
+                <TextBlock>
+                    <Run FontWeight="Bold" Text="{Binding projectNumber}"/>
+                    <Run Text=" - "/>
+                    <Run Text="{Binding projectName}"/>
+                </TextBlock>
             </StackPanel>
-            <StackPanel Grid.Column="1" >
-                <TextBlock Foreground="DarkGray" Text="{Binding author, StringFormat=Author: {0}}" Margin="25,0,0,0" HorizontalAlignment="Right" />
-                <TextBlock Foreground="DarkGray" Text="{Binding extension, StringFormat=Extension: {0}}" Margin="25,0,0,0" HorizontalAlignment="Right" />
+            <StackPanel Grid.Column="1">
+                <TextBlock Foreground="DarkGray" Text="{Binding version, StringFormat=Revit Version: {0}}" Margin="25,0,0,0" HorizontalAlignment="Right" />
+                <!-- <TextBlock Foreground="DarkGray" Text="{Binding extension, StringFormat=Extension: {0}}" Margin="25,0,0,0" HorizontalAlignment="Right" /> -->
             </StackPanel>
         </Grid>
     </StackPanel>
