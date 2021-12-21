@@ -1,0 +1,6 @@
+title: "COBie.Component Assign Marks"
+tooltip: >-
+  Assign a instance mark value to all model instances that are marked for
+  COBie export to assist with getting a unique component name. After a valid
+  mark is assigned, use the COBie > BIM Interop Tool > Update and make sure
+  the Component Name parameter is selected for update.

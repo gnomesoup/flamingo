@@ -1,0 +1,6 @@
+title: COBie.Space Import Categories
+tooltip: >-
+  Import COBie.Space.Category from another Revit model. If the room names are
+  the same across both models, the category field will be imported into the
+  destination model. If a matching room name does not exist, the category
+  will remain unchanged.

@@ -1,0 +1,13 @@
+title: COBie.Component Auto-Select
+tooltip: >-
+  Checks the "COBie" checkbox for all instances of the families that are enabled
+  in the COBie.Types schedule and are located in rooms that are also enabled in
+  the COBie.Space schedule. If the COBie.Component.Space command is blank, run 
+  the flamingo "COBie.Component Set Space Names" command and run this tool
+  again.
+
+
+  This command is less intensive than the BIM Interoperability Tools "Select"
+  command and can act as a replacement, but requires that the families in
+  COBie.Types be manually enabled, the COBie checkbox needs to be checked,
+  before running.

@@ -1,0 +1,8 @@
+title: COBie.Component Set Space Number
+tooltip: >-
+  Fuzzy matching of a room to components set to be exported in the
+  COBie.Component schedule. If the Space parameter is blank, the room number
+  will be pulled from the room parameter in Revit. If the family instance is
+  not reporting a room number, an attempt will be made to match the component
+  to the appropriate room number. If a room number is listed that is not
+  included in the COBie.Space schedule, a warning will be returned.
