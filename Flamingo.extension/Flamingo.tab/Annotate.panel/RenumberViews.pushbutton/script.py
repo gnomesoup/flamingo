@@ -129,6 +129,6 @@ if outOfBounds > 0:
         plural = "s where"
     forms.alert(
         str(outOfBounds) + " view" + plural
-        + " out of the working space of a standard WHA titleblock."
+        + " out of the working space of a standard titleblock."
         + " Adjust the view labels and re-run."
     )

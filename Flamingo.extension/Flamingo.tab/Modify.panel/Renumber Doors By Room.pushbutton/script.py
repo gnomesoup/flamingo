@@ -1,15 +1,17 @@
 from Autodesk.Revit import DB
 from pyrevit import revit, HOST_APP, forms, script
 from flamingo.revit import DoorRenameByRoomNumber, FilterByCategory
+from flamingo.revit import GetViewPhase
 
 if __name__ == "__main__":
     doc = HOST_APP.doc
     activeView = doc.ActiveView
-    activePhaseParameter = activeView.get_Parameter(
-        DB.BuiltInParameter.VIEW_PHASE
-    )
-    activePhaseId = activePhaseParameter.AsElementId()
-    activePhase = doc.GetElement(activePhaseId)
+    # activePhaseParameter = activeView.get_Parameter(
+    #     DB.BuiltInParameter.VIEW_PHASE
+    # )
+    # activePhaseId = activePhaseParameter.AsElementId()
+    # activePhase = doc.GetElement(activePhaseId)
+    activePhase = GetViewPhase(activeView, doc)
 
     selection = revit.get_selection()
     if selection.is_empty:
