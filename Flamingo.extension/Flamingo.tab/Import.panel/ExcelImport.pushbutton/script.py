@@ -130,7 +130,7 @@ if __name__ == "__main__":
                         .LookupParameter("Worksheet").AsString()
                     if worksheetValue == worksheetName:
                         deleteList.append(element)
-
+            
             # Get a view to place families
             viewName = "«" + worksheetName + "» Import Placeholder"
             try:
@@ -221,7 +221,6 @@ if __name__ == "__main__":
                 SetNoteBlockProperties(
                     scheduleView=scheduleView,
                     viewName="Excel-{}".format(worksheetName),
-                    familyInstance=rowFamily,
                     metaParameterNameList=metaParameterNames,
                     columnNameList=dataParameterNames[0:data["columnCount"]],
                     headerNames=headerNames,
