@@ -5,7 +5,7 @@ clr.ImportExtensions(System.Linq)
 
 if __name__ == "__main__":
 
-    selection = forms.CommandSwitchWindow.Show(
+    selection = forms.CommandSwitchWindow.show(
         context=["All Values", "Blank Values Only"],
         message="Would you like to update:",
     )

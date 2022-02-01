@@ -11,7 +11,7 @@ def GetCategoriesBySpaceDescription(doc):
             .OfClass(DB.ViewSchedule)\
             .WhereElementIsNotElementType()\
             .Where(lambda x: x.Name == "COBie.Space (Rooms)").First()
-    except:
+    except Exception:
         forms.alert(
             "Please setup the project for COBie using the BIM Interoperability "
             "Tools before running this command.",

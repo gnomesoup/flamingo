@@ -1,0 +1,7 @@
+title: COBie Uncheck Unselected
+tooltip: >-
+  De-selects all COBie and COBie.Type checkboxes in the model. Run this before
+  running the BIM Interoperability Tools Select command to avoid selection
+  errors. This command only effects elements that are in an unselected state
+  (greyed out checkbox). Previously checked/unchecked elements will remain
+  unchanged.
