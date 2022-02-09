@@ -1,0 +1,6 @@
+title: "Family \nReference Frame"
+tooltip: >-
+  Create a framework of reference planes in a family to define the extents of
+  family. A reference plane will be added to the family for the Front, Back,
+  Left, Right, Top, Center (Front/Back), Center (Left/Right), Center (Elevation)
+  references. Any reference planes that are already defined will be skipped.
