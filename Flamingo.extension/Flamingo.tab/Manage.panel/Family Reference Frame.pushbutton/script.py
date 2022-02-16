@@ -92,15 +92,15 @@ if __name__ == "__main__":
         },
         int(DB.FamilyInstanceReferenceType.Top): {
             "name": "Top",
-            "bubbleEnd": DB.XYZ(-LENGTH, 0, OFFSET * 2),
-            "freeEnd": DB.XYZ(LENGTH, 0, OFFSET * 2),
+            "bubbleEnd": DB.XYZ(-LENGTH, -LENGTH, OFFSET * 2),
+            "freeEnd": DB.XYZ(LENGTH, -LENGTH, OFFSET * 2),
             "cutVector": DB.XYZ.BasisY,
             "view": frontView
         },
         int(DB.FamilyInstanceReferenceType.Bottom): {
             "name": "Bottom",
-            "bubbleEnd": DB.XYZ(-LENGTH, 0, 0),
-            "freeEnd": DB.XYZ(LENGTH, 0, 0),
+            "bubbleEnd": DB.XYZ(-LENGTH, -LENGTH, 0),
+            "freeEnd": DB.XYZ(LENGTH, -LENGTH, 0),
             "cutVector": DB.XYZ.BasisY,
             "view": frontView
         },
@@ -120,8 +120,8 @@ if __name__ == "__main__":
         },
         int(DB.FamilyInstanceReferenceType.CenterElevation): {
             "name": "Center (Elevation)",
-            "bubbleEnd": DB.XYZ(-LENGTH, 0, OFFSET),
-            "freeEnd": DB.XYZ(LENGTH, 0, OFFSET),
+            "bubbleEnd": DB.XYZ(-LENGTH, -LENGTH, OFFSET),
+            "freeEnd": DB.XYZ(LENGTH, -LENGTH, OFFSET),
             "cutVector": DB.XYZ.BasisY,
             "view": frontView
         }
