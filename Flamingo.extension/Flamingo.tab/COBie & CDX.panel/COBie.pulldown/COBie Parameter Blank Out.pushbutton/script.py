@@ -3,17 +3,6 @@ from pyrevit import clr, DB, HOST_APP, forms
 import System
 clr.ImportExtensions(System.Linq)
 
-def getSymbolId(element):
-    try:
-        if element.LookupParameter("COBie").AsInteger() == 1:
-            symbolId = element.Symbol.Id
-        else: 
-            symbolId = None
-    except:
-        symbolId = None
-    return symbolId
-        
-
 if __name__ == "__main__":
     
     doc = HOST_APP.doc

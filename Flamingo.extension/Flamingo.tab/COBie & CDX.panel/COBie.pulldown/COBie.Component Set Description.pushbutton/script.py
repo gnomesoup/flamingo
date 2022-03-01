@@ -24,7 +24,8 @@ if __name__ == "__main__":
     except:
         forms.alert(
             "Please setup the project for COBie using the BIM Interoperability "
-            "Tools before running this command."
+            "Tools before running this command.",
+            exitscript=True
         )
     elements = COBieComponentSetDescription(view, blankOnly=blankOnly, doc=doc)
     n = len(elements)
