@@ -1,0 +1,5 @@
+title: "Space \nCUI-SBU"
+tooltip: >-
+  Quickly set the CDX.05.Space.CUI-SBU parameter to indicate if the space is Sensitive
+  But Unclassified (SBU) / Controlled Unclassified Information (CUI)
+  (i.e., Yes, No, NULL)
