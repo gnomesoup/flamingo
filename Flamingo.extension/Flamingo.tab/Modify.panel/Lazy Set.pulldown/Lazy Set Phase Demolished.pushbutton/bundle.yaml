@@ -1,0 +1,8 @@
+title: Lazy Set Phase Demolished
+tooltip: >-
+  Sets the phase the selected elements where demolished. If the element does not
+  allow for phase demolished to be set because it is hosted to another element,
+  the element will be skipped.
+
+  This tool is helpful for setting the phase demolished for a lot of elements in
+  the model without the need to filter out elements hosted to other elements.

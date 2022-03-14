@@ -1,0 +1,8 @@
+title: Lazy Set Workset
+tooltip: >-
+  Sets the workset of an element. If the element does not allow for a workset
+  to be set because it is hosted to another element, the element will be
+  skipped.
+
+  This tool is helpful for setting a workset for a lot of elements in the model at once
+  without the need to filter out elements hosted to other elements.
