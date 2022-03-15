@@ -1,16 +1,18 @@
-from pyrevit import forms
+from pyrevit import forms, script
 import os
 import re
 
-regEx = re.compile(r"\d{4}\.r(vt|fa)$")
+regEx = re.compile(r"\d{4}\.r(vt|fa|te)$")
 
 path = forms.pick_folder(
     title="Select folder to cleanup backups"
 )
+if not path:
+    script.exit()
 
 rvtFiles = [
     f for f in os.listdir(path)
-    if f.endswith(".rvt") or f.endswith(".rfa")
+    if re.search(r"\.r(vt|fa|te)$", f.lower())
 ]
 
 backupFiles = [
