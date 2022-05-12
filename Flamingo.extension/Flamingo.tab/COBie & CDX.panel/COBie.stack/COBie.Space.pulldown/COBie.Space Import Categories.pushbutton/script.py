@@ -3,34 +3,66 @@ from flamingo.revit import OpenDetached, GetScheduledParameterByName
 from pyrevit import HOST_APP, clr, forms, revit, script
 
 import System
+
 clr.ImportExtensions(System.Linq)
 
+LOGGER = script.get_logger()
+
 def GetCategoriesBySpaceDescription(doc):
-    try: 
-        schedule = DB.FilteredElementCollector(originalDoc)\
-            .OfClass(DB.ViewSchedule)\
-            .WhereElementIsNotElementType()\
-            .Where(lambda x: x.Name == "COBie.Space (Rooms)").First()
+    try:
+        schedule = (
+            DB.FilteredElementCollector(originalDoc)
+            .OfClass(DB.ViewSchedule)
+            .WhereElementIsNotElementType()
+            .Where(lambda x: x.Name == "COBie.Space (Rooms)")
+            .First()
+        )
     except Exception:
         forms.alert(
             "Please setup the project for COBie using the BIM Interoperability "
             "Tools before running this command.",
-            exitscript=True
+            exitscript=True,
         )
-    cobieSpaceName = GetScheduledParameterByName(
-        scheduleView=schedule,
-        parameterName="COBie.Space.Description"
-    )
-    cobieSpaceCategory = GetScheduledParameterByName(
-        scheduleView=schedule,
-        parameterName="COBie.Space.Category"
-    )
-    rooms = DB.FilteredElementCollector(doc, schedule.Id)\
-        .OfCategory(DB.BuiltInCategory.OST_Rooms)\
+    # cobieSpaceName = GetScheduledParameterByName(
+    #     scheduleView=schedule,
+    #     parameterName="COBie.Space.Description"
+    # )
+    # cobieSpaceCategory = GetScheduledParameterByName(
+    #     scheduleView=schedule, parameterName="COBie.Space.Category"
+    # )
+    try:
+        cobieSpaceName = (
+            DB.FilteredElementCollector(doc)
+            .OfClass(DB.SharedParameterElement)
+            .Where(lambda x: x.Name == "COBie.Space.Description")
+            .First()
+        )
+        cobieSpaceCategory = (
+            DB.FilteredElementCollector(doc)
+            .OfClass(DB.SharedParameterElement)
+            .Where(lambda x: x.Name == "COBie.Space.Category")
+            .First()
+        )
+    except Exception as e:
+        LOGGER.debug("Error finding COBie parameters in source project: {}".format(e))
+        cobieSpaceName = None
+        cobieSpaceCategory = None
+
+    if cobieSpaceName is None or cobieSpaceCategory is None:
+        forms.alert(
+            "The source projects is not properly configured as a COBie project",
+            exitscript=True,
+        )
+    rooms = (
+        DB.FilteredElementCollector(doc, schedule.Id)
+        .OfCategory(DB.BuiltInCategory.OST_Rooms)
         .ToElements()
-    
+    )
+
     categoryByDescription = {}
     for room in rooms:
+        if room is None:
+            continue
         nameParameter = room.get_Parameter(cobieSpaceName.GuidValue)
         if nameParameter is None:
             continue
@@ -47,17 +79,16 @@ def GetCategoriesBySpaceDescription(doc):
 
     return categoryByDescription
 
+
 def UpdateSpaceCategoryFromDictionary(
     dictionary, scheduleView, blankOnly=False, doc=None
 ):
     rooms = DB.FilteredElementCollector(doc, scheduleView.Id)
     cobieSpaceName = GetScheduledParameterByName(
-        scheduleView=schedule,
-        parameterName="COBie.Space.Description"
+        scheduleView=schedule, parameterName="COBie.Space.Description"
     )
     cobieSpaceCategory = GetScheduledParameterByName(
-        scheduleView=schedule,
-        parameterName="COBie.Space.Category"
+        scheduleView=schedule, parameterName="COBie.Space.Category"
     )
     with revit.Transaction("Import COBie.Space.Category"):
         for room in rooms:
@@ -75,24 +106,27 @@ def UpdateSpaceCategoryFromDictionary(
             categoryParameter.Set(dictionary[name])
     return
 
+
 if __name__ == "__main__":
-    
+
     doc = HOST_APP.doc
-    try: 
-        schedule = DB.FilteredElementCollector(doc)\
-            .OfClass(DB.ViewSchedule)\
-            .WhereElementIsNotElementType()\
-            .Where(lambda x: x.Name == "COBie.Space (Rooms)").First()
+    try:
+        schedule = (
+            DB.FilteredElementCollector(doc)
+            .OfClass(DB.ViewSchedule)
+            .WhereElementIsNotElementType()
+            .Where(lambda x: x.Name == "COBie.Space (Rooms)")
+            .First()
+        )
     except:
         forms.alert(
             "Please setup the project for COBie using the BIM Interoperability "
             "Tools before running this command.",
-            exitscript=True
+            exitscript=True,
         )
 
     originalRvtPath = forms.pick_file(
-        file_ext="rvt",
-        title="Select Revit file to import space categories"
+        file_ext="rvt", title="Select Revit file to import space categories"
     )
 
     if not originalRvtPath:
@@ -120,5 +154,5 @@ if __name__ == "__main__":
         dictionary=categoryByDescription,
         scheduleView=schedule,
         blankOnly=blankOnly,
-        doc=doc
+        doc=doc,
     )
