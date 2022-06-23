@@ -1,39 +1,5 @@
 import clr
-from flamingo.revit import GetAllProjectMaterialIds
-
-
-def GetUnusedMaterials(doc=None,  nameFilter=None):
-    allMaterialIds = GetAllProjectMaterialIds(
-        inUseOnly=False,
-        nameFilter=nameFilter,
-        doc=doc
-    )
-    usedMaterialIds = GetAllProjectMaterialIds(
-        inUseOnly=True,
-        nameFilter=nameFilter,
-        doc=doc
-    )
-    return [
-        doc.GetElement(materialId) for materialId in allMaterialIds
-        if materialId not in usedMaterialIds
-    ]
-
-def GetUnusedAssets(doc=None):
-    postPurgeMaterials = DB.FilteredElementCollector(doc) \
-        .OfClass(DB.Material) \
-        .ToElements()
-
-    currentAssetIds = DB.FilteredElementCollector(doc) \
-        .OfClass(DB.AppearanceAssetElement) \
-        .ToElementIds()
-
-    usedAssetIds = [
-        material.AppearanceAssetId for material in postPurgeMaterials
-    ]
-    return [
-        doc.GetElement(elementId) for elementId in currentAssetIds
-        if elementId not in usedAssetIds if elementId is not None
-    ]
+from flamingo.revit import GetUnusedAssets, GetUnusedMaterials
 
 
 from pyrevit import DB, HOST_APP, forms, revit, EXEC_PARAMS, script
@@ -44,7 +10,9 @@ clr.ImportExtensions(System.Linq)
 if __name__ == "__main__":
     doc = HOST_APP.doc
 
-    if not EXEC_PARAMS.config_mode:
+    if EXEC_PARAMS.config_mode:
+        protectedMaterialNames = None
+    else:
         protectedMaterialNames = (
             r"^Analytical",
             r"^Dynamo",
@@ -52,8 +20,7 @@ if __name__ == "__main__":
             r"^Phase -",
             r"^Poche",
         )
-    else:
-        protectedMaterialNames = None
+    print(protectedMaterialNames)
 
     unusedMaterials = GetUnusedMaterials(doc=doc, nameFilter=protectedMaterialNames)
     if unusedMaterials:
