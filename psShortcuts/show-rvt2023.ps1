@@ -13,13 +13,13 @@ function Show-Process($Process, [Switch]$Maximize)
 }
 
 $rvt = Get-Process -Name "revit" -ErrorAction Ignore | Where-Object {
-    $_.MainWindowTitle -like "Autodesk Revit 2022*"
+    $_.MainWindowTitle -like "Autodesk Revit 2023*"
 }
 
 if ($rvt) {
     Show-Process($rvt, $true)
 }
 else {
-    Start-Process -FilePath 'C:\Program Files\Autodesk\Revit 2022\Revit.exe'
+    Start-Process -FilePath 'C:\Program Files\Autodesk\Revit 2023\Revit.exe'
 }
 
