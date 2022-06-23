@@ -1,5 +1,41 @@
 import clr
 from flamingo.revit import GetAllProjectMaterialIds
+
+
+def GetUnusedMaterials(doc=None,  nameFilter=None):
+    allMaterialIds = GetAllProjectMaterialIds(
+        inUseOnly=False,
+        nameFilter=nameFilter,
+        doc=doc
+    )
+    usedMaterialIds = GetAllProjectMaterialIds(
+        inUseOnly=True,
+        nameFilter=nameFilter,
+        doc=doc
+    )
+    return [
+        doc.GetElement(materialId) for materialId in allMaterialIds
+        if materialId not in usedMaterialIds
+    ]
+
+def GetUnusedAssets(doc=None):
+    postPurgeMaterials = DB.FilteredElementCollector(doc) \
+        .OfClass(DB.Material) \
+        .ToElements()
+
+    currentAssetIds = DB.FilteredElementCollector(doc) \
+        .OfClass(DB.AppearanceAssetElement) \
+        .ToElementIds()
+
+    usedAssetIds = [
+        material.AppearanceAssetId for material in postPurgeMaterials
+    ]
+    return [
+        doc.GetElement(elementId) for elementId in currentAssetIds
+        if elementId not in usedAssetIds if elementId is not None
+    ]
+
+
 from pyrevit import DB, HOST_APP, forms, revit, EXEC_PARAMS, script
 import re
 import System
@@ -16,24 +52,10 @@ if __name__ == "__main__":
             r"^Phase -",
             r"^Poche",
         )
-    protectedRegex = re.compile("|".join(protectedMaterialNames))
+    else:
+        protectedMaterialNames = None
 
-    allMaterialIds = GetAllProjectMaterialIds(
-        inUseOnly=False,
-        nameFilter=protectedMaterialNames,
-        doc=doc
-    )
-    usedMaterialIds = GetAllProjectMaterialIds(
-        inUseOnly=True,
-        nameFilter=protectedMaterialNames,
-        doc=doc
-    )
-
-    unusedMaterials = [
-        doc.GetElement(materialId) for materialId in allMaterialIds
-        if materialId not in usedMaterialIds
-    ]
-
+    unusedMaterials = GetUnusedMaterials(doc=doc, nameFilter=protectedMaterialNames)
     if unusedMaterials:
         materialFormData = forms.SelectFromList.show(
             unusedMaterials,
@@ -50,22 +72,7 @@ if __name__ == "__main__":
                     doc=doc
                 )
 
-    postPurgeMaterials = DB.FilteredElementCollector(doc) \
-        .OfClass(DB.Material) \
-        .ToElements()
-
-    currentAssetIds = DB.FilteredElementCollector(doc) \
-        .OfClass(DB.AppearanceAssetElement) \
-        .ToElementIds()
-
-    usedAssetIds = [
-        material.AppearanceAssetId for material in postPurgeMaterials
-    ]
-    unusedAssets = [
-        doc.GetElement(elementId) for elementId in currentAssetIds
-        if elementId not in usedAssetIds if elementId is not None
-    ]
-
+    unusedAssets = GetUnusedAssets(doc)
     if unusedAssets:
         assetFormData = forms.SelectFromList.show(
             unusedAssets,

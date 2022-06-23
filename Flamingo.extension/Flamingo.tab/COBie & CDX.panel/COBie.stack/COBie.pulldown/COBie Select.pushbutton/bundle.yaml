@@ -1,0 +1,5 @@
+title: COBie Select
+tooltip: >-
+  A group aware COBie selection tool to replace the BIM Interoperability Tools
+  select command. Skips elements that are included in a group and provides links to
+  the elements that couldn't be selected.
