@@ -1,4 +1,7 @@
 layout:
+  - Inspect
+  - Sum Lengths
+  - Parameter Category Match
   - Place Families In Folder
   - Family Reference Frame
   - Material Asset Swap
