@@ -1,0 +1,4 @@
+title: Close Background Documents
+tooltip: >-
+  Attempts to close background documents that are no longer in use
+context: zero-doc
