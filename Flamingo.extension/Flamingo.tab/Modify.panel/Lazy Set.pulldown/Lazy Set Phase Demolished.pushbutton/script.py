@@ -1,3 +1,4 @@
+from Autodesk.Revit import DB
 from pyrevit import HOST_APP, forms, revit, script
 from flamingo.ensure import set_element_phase_demolished
 
@@ -6,7 +7,7 @@ if __name__ == "__main__":
 
     phases = doc.Phases
     phaseDictionary = {phase.Name: phase.Id for phase in phases}
-    phaseNames = [phase.Name for phase in phases]
+    phaseNames = ["None"] + [phase.Name for phase in phases]
     
     phaseName = forms.ask_for_one_item(
         items=phaseNames,
@@ -22,10 +23,14 @@ if __name__ == "__main__":
         selection = selection.elements
     
     with revit.Transaction("Lazy Set Phase Demolished"):
+        if phaseName == "None":
+            phaseId = DB.ElementId.InvalidElementId
+        else:
+            phaseId = phaseDictionary[phaseName]
         setElements = [
             set_element_phase_demolished(
                 element,
-                phaseDictionary[phaseName],
+                phaseId,
                 doc
             ) for element in selection
         ]
