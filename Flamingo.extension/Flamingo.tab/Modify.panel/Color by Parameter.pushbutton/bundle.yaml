@@ -1,0 +1,4 @@
+title: "Color By\n Parameter"
+tooltip: >-
+  Overrides the the element surface pattern for all elements in the current view with
+  a unique color for each value of the selected parameter.
