@@ -1,4 +1,4 @@
-from Autodesk.Revit import DB
+from Autodesk.Revit.DB import ElementId, Group
 from pyrevit import HOST_APP, forms, revit, script
 from flamingo.ensure import set_element_phase_demolished
 
@@ -24,15 +24,24 @@ if __name__ == "__main__":
     
     with revit.Transaction("Lazy Set Phase Demolished"):
         if phaseName == "None":
-            phaseId = DB.ElementId.InvalidElementId
+            phaseId = ElementId.InvalidElementId
         else:
             phaseId = phaseDictionary[phaseName]
+        groupedElementIds = [
+            element.GetMemberIds() for element in selection if type(element) == Group
+        ]
+        # Flatten the list of lists
+        groupedElementIds = [
+            doc.GetElement(elementId)
+            for group in groupedElementIds
+            for elementId in group
+        ]
         setElements = [
             set_element_phase_demolished(
                 element,
                 phaseId,
                 doc
-            ) for element in selection
+            ) for element in selection + groupedElementIds
         ]
 
     forms.alert(
