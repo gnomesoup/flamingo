@@ -1,0 +1,10 @@
+title: Inspect Shared Parameters
+tooltip: >-
+  List all parameters in current shared parameter file and mark if the parameter is
+  included in the current project. Also provides a list of shared paramaters included
+  in the project that are not in the shared parameter file.
+
+
+  Shift+Click: Prompt for a path to a shared parameter file instead of using the
+  currently loaded file.
+

@@ -1,0 +1,4 @@
+title: Section Box
+tooltip: >-
+  Creates a section box around the selected elements. Selection can include elements
+  in linked files.
