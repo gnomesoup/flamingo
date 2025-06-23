@@ -1,6 +1,7 @@
 layout:
   - Modify
   - Annotate
+  - View
   - Export
   - Import
   - Manage
