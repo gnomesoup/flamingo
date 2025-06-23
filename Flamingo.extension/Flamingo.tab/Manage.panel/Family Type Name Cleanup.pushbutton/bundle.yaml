@@ -1,0 +1,4 @@
+title: "Type Name\nCleanup"
+tooltip: >-
+  Find all family types that start with "Family" and rename them to match the family
+  name.
