@@ -1,5 +1,6 @@
 layout:
   - Inspect
+  - Set Units
   - Sum Lengths
   - Parameter Category Match
   - Place Families In Folder
