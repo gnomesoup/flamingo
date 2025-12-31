@@ -1,0 +1,4 @@
+title: "Transform\n with Last"
+tooltip: >-
+  Applies a transformation to the selected objects
+  using the last used transform settings.

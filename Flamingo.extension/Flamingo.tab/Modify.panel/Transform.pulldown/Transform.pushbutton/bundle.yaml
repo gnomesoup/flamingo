@@ -1,0 +1,5 @@
+title: "Transform"
+tooltip: >-
+  Record or apply a transformation to selected objects.
+  The transform can include move, rotate, and scale. Recorded
+  transformations get saved to the project.
