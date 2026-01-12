@@ -3,6 +3,12 @@ from pyrevit import HOST_APP, forms, revit, script
 
 if __name__ == "__main__":
     doc = HOST_APP.doc
+    version = HOST_APP.version
+    if version < 2023:
+        forms.alert(
+            "This script requires Revit 2023 or later.",
+            exitscript=True,
+        )
 
     command = forms.CommandSwitchWindow.show(
         context=["Feet and Inches", "Fractional Inches", "Millimeters"],
