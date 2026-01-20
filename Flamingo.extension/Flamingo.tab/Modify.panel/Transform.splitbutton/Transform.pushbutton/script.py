@@ -45,64 +45,6 @@ class TransformManagerWindow(forms.WPFWindow):
 
         self._populate_list()
 
-        flamingoPinkLight = Color.FromRgb(
-            int(FLAMINGO_PINK_LIGHT[1:3], 16),  # R
-            int(FLAMINGO_PINK_LIGHT[3:5], 16),  # G
-            int(FLAMINGO_PINK_LIGHT[5:7], 16),  # B
-        )
-        flamingoPinkDark = Color.FromRgb(
-            int(FLAMINGO_PINK_DARK[1:3], 16),  # R
-            int(FLAMINGO_PINK_DARK[3:5], 16),  # G
-            int(FLAMINGO_PINK_DARK[5:7], 16),  # B
-        )
-        flamingoGreyLight = Color.FromRgb(
-            int(FLAMINGO_GREY_LIGHT[1:3], 16),  # R
-            int(FLAMINGO_GREY_LIGHT[3:5], 16),  # G
-            int(FLAMINGO_GREY_LIGHT[5:7], 16),  # B
-        )
-        flamingoGreyDark = Color.FromRgb(
-            int(FLAMINGO_GREY_DARK[1:3], 16),   # R
-            int(FLAMINGO_GREY_DARK[3:5], 16),   # G
-            int(FLAMINGO_GREY_DARK[5:7], 16),   # B
-        )
-        flamingoGold = Color.FromRgb(
-            int(FLAMINGO_GOLD[1:3], 16),  # R
-            int(FLAMINGO_GOLD[3:5], 16),  # G
-            int(FLAMINGO_GOLD[5:7], 16),  # B
-        )
-
-        self.Background = SolidColorBrush(flamingoPinkLight)
-        self.Foreground = SolidColorBrush(flamingoGreyDark)
-        self.BorderBrush = SolidColorBrush(flamingoGreyDark)
-
-        textBoxes = [
-            self.txt_name,
-            self.txt_origin,
-            self.txt_target,
-            self.txt_angle,
-            self.txt_scale,
-        ]
-
-        for txt in textBoxes:
-            # txt.Background = SolidColorBrush(flamingoPinkLight)
-            txt.Foreground = SolidColorBrush(flamingoGreyDark)
-            txt.BorderBrush = SolidColorBrush(flamingoGreyDark)
-
-        # Apply colors to all Buttons
-        buttons = [
-            self.btn_add,
-            self.btn_remove,
-            self.btn_pick_origin,
-            self.btn_pick_target,
-            self.btn_map_points,
-            self.btn_save,
-            self.btn_save_all,
-        ]
-
-        for btn in buttons:
-            btn.Background = SolidColorBrush(flamingoPinkDark)
-            btn.Foreground = SolidColorBrush(flamingoGreyDark)
-
     def _populate_list(self):
         self.preset_listbox.Items.Clear()
         for name in sorted(self.transforms.keys()):
@@ -326,6 +268,9 @@ def TranslatePoint(point, transformData):
     target = DB.XYZ(*transformData["target"])
     angle = transformData["angle"]
     scale = transformData["scale"]
+    originalZ = point.Z
+    LOGGER.debug("Translating Point")
+    LOGGER.debug("Original Point: {}".format(point))
     transformMove = DB.Transform.CreateTranslation(target - origin)
     transformRotate = DB.Transform.CreateRotationAtPoint(
         DB.XYZ.BasisZ, radians(angle), target
@@ -334,10 +279,11 @@ def TranslatePoint(point, transformData):
     translatedPoint = origin + DB.XYZ(
         (point.X - origin.X) * scale,
         (point.Y - origin.Y) * scale,
-        0,
+        originalZ,
     )
     translatedPoint = transformMove.OfPoint(translatedPoint)
     translatedPoint = transformRotate.OfPoint(translatedPoint)
+    LOGGER.debug("Translated Point: {}".format(translatedPoint))
     return translatedPoint
 
 
@@ -366,6 +312,18 @@ def TranslateCurve(curve, transformData):
     return newCurve
 
 
+def TransformSketch(sketch, transformData):
+    # LOGGER.set_debug_mode()
+    doc = sketch.Document
+    for curves in sketch.Profile:
+        for curve in curves:
+            newCurve = TranslateCurve(curve, transformData)
+            doc.Create.NewModelCurve(newCurve, sketch.SketchPlane)
+            doc.Delete(curve.Reference.ElementId)
+    # LOGGER.reset_level()
+    return
+
+
 def transformElement(element, transformData):
     """Transforms an element based on element type using the provided
 
@@ -382,12 +340,23 @@ def transformElement(element, transformData):
     target = DB.XYZ(*transformData["target"])
     angle = transformData["angle"]
     scale = transformData["scale"]
-    transformMove = DB.Transform.CreateTranslation(target - origin)
-    transformRotate = DB.Transform.CreateRotationAtPoint(
-        DB.XYZ.BasisZ, radians(angle), target
-    )
     location = element.Location
 
+    if (
+        hasattr(element, "GetLeaders")
+        and element.GetLeaders()
+        and isinstance(location, DB.LocationPoint)
+    ):
+        LOGGER.set_debug_mode()
+        LOGGER.debug(
+            "Element {} has leaders, transforming end point.".format(element.Id)
+        )
+        leaders = element.GetLeaders()
+        leaderEndPoint = leaders[0].End
+        newPoint = TranslatePoint(leaderEndPoint, transformData)
+        LOGGER.debug("Move: {}".format(newPoint - leaderEndPoint))
+        element.Location.Move(newPoint - leaderEndPoint)
+        LOGGER.reset_level()
     if isinstance(location, DB.LocationPoint):
         LOGGER.debug("Transforming Element with LocationPoint {}".format(element.Id))
         # TODO: Create option for 3D scale
@@ -405,14 +374,16 @@ def transformElement(element, transformData):
     if isinstance(location, DB.LocationCurve):
         LOGGER.debug("Transforming Element with LocationCurve {}".format(element.Id))
         element.Location.Curve = TranslateCurve(element.Location.Curve, transformData)
-    elif hasattr(element, "SketchId"):
-        LOGGER.debug("Transforming Element with SketchId {}".format(element.Id))
-        sketch = element.Document.GetElement(element.SketchId)
 
         # assert
     elif isinstance(element, DB.TextNote):
         LOGGER.debug("Transforming TextNote {}".format(element.Id))
-        # TODO: Handle text note
+        leaders = element.GetLeaders()
+        if leaders:
+            point = leaders[0].End
+        else:
+            point = element.Coord
+        element.Location.Move(TranslatePoint(point, transformData) - point)
     elif hasattr(element, "BoundingBox"):
         LOGGER.debug("Transforming Element by BoundingBox {}".format(element.Id))
     else:
@@ -453,14 +424,15 @@ if __name__ == "__main__":
             )
             formOutput.ShowDialog()
             if not formOutput.updated:
-                script.exit()
-            transforms = formOutput.transforms
-            SetFlamingoSetting(
-                "Transforms",
-                json.dumps(transforms),
-                doc=doc,
-                schema=schema,
-            )
+                transforms = None
+            else:
+                transforms = formOutput.transforms
+                SetFlamingoSetting(
+                    "Transforms",
+                    json.dumps(transforms),
+                    doc=doc,
+                    schema=schema,
+                )
         else:
             transforms = json.loads(transformSettings)
         LOGGER.debug("Loaded transforms: {}".format(transforms))
@@ -523,18 +495,50 @@ if __name__ == "__main__":
         for key, value in transformData.items():
             LOGGER.debug("{}: {}".format(key, value))
 
+        unableToTranslate = []
+        sketchesToTransform = []
+        elementsToTransform = []
+        for element in selection:
+            location = getattr(element, "Location", None)
+            if hasattr(element, "SketchId") and not (
+                isinstance(location, DB.LocationPoint)
+                or isinstance(location, DB.LocationCurve)
+            ):
+                LOGGER.debug("Gathering Element Sketch {}".format(element.Id))
+                sketch = element.Document.GetElement(element.SketchId)
+                sketchesToTransform.append(sketch)
+            else:
+                elementsToTransform.append(element)
+        for sketch in sketchesToTransform:
+            try:
+                doc = sketch.Document
+                LOGGER.debug(
+                    "Translating sketch element: {}".format(OUTPUT.linkify(sketch.Id))
+                )
+                sketchEditScope = DB.SketchEditScope(
+                    doc, "Translate Sketch {}".format(option)
+                )
+                assert sketchEditScope.IsPermitted, "Sketch edit scope is not permitted"
+                sketchEditScope.Start(sketch.Id)
+                with revit.Transaction("Translate Sketch"):
+                    TransformSketch(sketch, transformData)
+                sketchEditScope.Commit(FailuresPreprocessor())
+            except Exception as e:
+                LOGGER.exception("Failed to transform sketch: {}".format(e))
+
         with revit.Transaction("Transform {}".format(option)):
-            unableToTranslate = []
-            for element in selection:
+            for element in elementsToTransform:
                 try:
                     transformElement(element, transformData)
                 except Exception as e:
-                    LOGGER.warning(
+                    LOGGER.exception(
                         "Failed to transform element {}: {}".format(
                             OUTPUT.linkify(element.Id), e
                         )
                     )
                     LOGGER.debug(traceback.format_exc())
+                finally:
+                    LOGGER.reset_level()
 
         CONFIG.set_option("last_transform", json.dumps(transformData))
         script.save_config()
